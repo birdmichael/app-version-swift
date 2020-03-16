@@ -1,5 +1,4 @@
 import XCTest
-import app-version-swift
 
 class Tests: XCTestCase {
     
