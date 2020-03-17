@@ -1,4 +1,4 @@
-![logo](/Users/birdmichael/Documents/GoldPraise/app-version-swift/logo.png)
+![logo](https://github.com/birdmichael/app-version-swift/blob/master/logo.png)
 
 ## APP版本管理系统
 
