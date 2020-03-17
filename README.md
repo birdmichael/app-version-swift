@@ -4,7 +4,7 @@
 
 APP版本管理是一套多应用更新发版的管理平台。 +
 通过部署本管理系统，以实现对多APP的多平台多渠道上的版本管理。
-
+后端项目：[Github](https://github.com/xtTech/app-version)
 ## 使用方法
 
 #### 安装
