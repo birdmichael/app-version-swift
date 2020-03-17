@@ -75,7 +75,7 @@ enum UpdateType: Int, Decodable {
 
 iOS端预览
 
-![show](/show.jpeg)
+![show](/show.png)
 
 后端预览
 

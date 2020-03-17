@@ -29,6 +29,7 @@ TODO: Add long description of the pod here.
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
   s.source_files = 'app-version-swift/Classes/**/*'
   
@@ -39,4 +40,5 @@ TODO: Add long description of the pod here.
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
    s.dependency 'Alamofire', '~> 5.0'
+   s.dependency 'SnapKit', '~> 5.0.0'
 end

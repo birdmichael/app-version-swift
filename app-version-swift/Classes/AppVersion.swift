@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import SnapKit
 
 
 public class AppVersion: UIView {
@@ -30,11 +31,6 @@ public class AppVersion: UIView {
     }()
 
     private var listTxt:UITextView!
-    public var txtFont:CGFloat = 14 {
-        didSet {
-            listTxt.font = UIFont.systemFont(ofSize: txtFont)
-        }
-    }
 
     init(parameters:ResponseData) {
         date = parameters
@@ -76,82 +72,109 @@ public class AppVersion: UIView {
         let config = AppVersionConfig.shared
         let ui = config.userInterface
 
-
-        var strHeight = self.sizeOfString(date.description).height
-        let othersHeight = (ui.topImageHeight + 20) + (ui.lblVersionHeight + 10) + (ui.UpdateButtonHeight + 20 + 30)
-        var isScrollList = false
-        var realAlertHeight = strHeight + othersHeight
-        if realAlertHeight > ui.alertMaxHeight {
-            realAlertHeight = ui.alertMaxHeight
-            strHeight = realAlertHeight - othersHeight
-            isScrollList = true
-        }
-
-        let contentView = UIView(frame: CGRect.init(x: 0, y: 0, width: AppVersionUI.screenWidth - 80, height: realAlertHeight))
+        let contentView = UIView()
         contentView.center = self.center
         contentView.backgroundColor = UIColor.white
-        contentView.layer.cornerRadius = 4
+        contentView.layer.cornerRadius = 12
         self.addSubview(contentView)
+        contentView.snp.makeConstraints { (make) in
+            make.width.equalTo(260)
+            make.center.equalToSuperview()
+        }
 
-        let topImage = UIImageView(frame: CGRect.init(x: 0, y: 20, width: contentView.frame.width, height: ui.topImageHeight))
-        topImage.contentMode = .scaleAspectFit
-        topImage.image = UIImage(named: "AppVersion.bundle/logo.png", in: Bundle(for: AppVersion.self), compatibleWith: nil)
+        let topImage = UIImageView(frame: .zero)
+        topImage.image = UIImage(named: "AppVersion.bundle/upgrade_bg_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
         contentView.addSubview(topImage)
+        topImage.snp.makeConstraints { (make) in
+            make.left.right.top.equalToSuperview()
+        }
 
-        let lblVersion = UILabel(frame: CGRect.init(x: 0, y: topImage.frame.maxY + 10, width: contentView.frame.width, height: ui.lblVersionHeight))
-        lblVersion.font = UIFont.boldSystemFont(ofSize: 18)
+        let rightImage = UIImageView(frame: .zero)
+        rightImage.image = UIImage(named: "AppVersion.bundle/upgrade_rocket_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
+        self.addSubview(rightImage)
+        rightImage.snp.makeConstraints { (make) in
+            make.right.equalTo(topImage)
+            make.top.equalTo(topImage).offset(-24)
+        }
+
+        let lblVersion = UILabel()
+        lblVersion.font = UIFont.boldSystemFont(ofSize: 13)
         lblVersion.textAlignment = .center
-        lblVersion.text = String(format:"发现新版本%@",date.version)
-        contentView.addSubview(lblVersion)
+        lblVersion.textColor = .white
+        lblVersion.text = "V\(date.version)"
+        topImage.addSubview(lblVersion)
+        lblVersion.snp.makeConstraints { (make) in
+            make.left.equalTo(16)
+            make.bottom.equalTo(-50)
+        }
 
-        listTxt = UITextView(frame: CGRect.init(x: 28, y: lblVersion.frame.maxY + 10, width: contentView.frame.width - 56, height: strHeight))
-        listTxt.font = UIFont.systemFont(ofSize: 17)
+        listTxt = UITextView()
         listTxt.text = date.description
         listTxt.isEditable = false
         listTxt.isSelectable = false
-        listTxt.isScrollEnabled = isScrollList
-        listTxt.showsVerticalScrollIndicator = isScrollList
+        listTxt.isScrollEnabled = false
+        listTxt.showsVerticalScrollIndicator = false
         listTxt.showsHorizontalScrollIndicator = false
 
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 5
-        let attributes = [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 17),
+        let attributes = [NSAttributedString.Key.font:UIFont.systemFont(ofSize: ui.txtFont),
+                          NSAttributedString.Key.foregroundColor: UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1),
                           NSAttributedString.Key.paragraphStyle:style]
         listTxt.attributedText = NSAttributedString(string: listTxt.text, attributes: attributes)
-
         contentView.addSubview(listTxt)
+        listTxt.sizeToFit()
+
+        listTxt.snp.makeConstraints { (make) in
+            make.top.equalTo(topImage.snp.bottom).offset(20)
+            make.left.equalTo(16)
+            make.right.equalTo(-16)
+        }
+        listTxt.layoutIfNeeded()
+
+
+        if listTxt.frame.height > ui.alertMaxHeight {
+            listTxt.isScrollEnabled = true
+            listTxt.showsVerticalScrollIndicator = true
+            listTxt.snp.remakeConstraints { (make) in
+                make.top.equalTo(topImage.snp.bottom).offset(20)
+                make.left.equalTo(16)
+                make.right.equalTo(-16)
+                make.height.equalTo(ui.alertMaxHeight)
+            }
+        }
+
 
         let btnUpdate = UIButton(type: .system)
-        btnUpdate.frame = CGRect.init(x: 25, y: listTxt.frame.maxY + 20, width: contentView.frame.width - 50, height: ui.UpdateButtonHeight)
         btnUpdate.clipsToBounds = true
-        btnUpdate.layer.cornerRadius = 2.0
+        btnUpdate.layer.cornerRadius = 4
         btnUpdate.backgroundColor = UIColor(red: 34 / 255, green: 153 / 255, blue: 238 / 255, alpha: 1)
         btnUpdate.setTitleColor(UIColor.white, for: .normal)
         btnUpdate.setTitle("立即更新", for: .normal)
         btnUpdate.addTarget(self, action: #selector(gotoUpdate), for: UIControl.Event.touchUpInside)
         contentView.addSubview(btnUpdate)
+        btnUpdate.snp.makeConstraints { (make) in
+            make.top.equalTo(listTxt.snp.bottom).offset(10)
+            make.left.equalTo(16)
+            make.right.equalTo(-16)
+            make.bottom.equalTo(-16).priority(.medium)
+            make.height.equalTo(34)
+        }
 
 
         let btnCancel = UIButton(type: .system)
         btnCancel.bounds = CGRect.init(x: 0, y: 0, width: ui.cancelButtonWidth, height: ui.cancelButtonWidth)
         btnCancel.center = CGPoint.init(x: contentView.frame.maxX, y: contentView.frame.minY)
-        btnCancel.setImage(UIImage(named: "AppVersion.bundle/cancel.png", in: Bundle(for: AppVersion.self), compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        btnCancel.setImage(UIImage(named: "AppVersion.bundle/upgrade_close_icon", in: Bundle(for: AppVersion.self), compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
         btnCancel.addTarget(self, action: #selector(cancelAlertAction), for: UIControl.Event.touchUpInside)
-        self.addSubview(btnCancel)
+        contentView.addSubview(btnCancel)
+        btnCancel.snp.makeConstraints { (make) in
+            make.left.equalTo(16)
+            make.top.equalTo(13)
+        }
 
 
     }
-
-    private func sizeOfString(_ str:String)->CGSize {
-        let string = str as NSString
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = 5
-        let attributes = [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 17),
-                          NSAttributedString.Key.paragraphStyle:style]
-        let size = string.boundingRect(with: CGSize.init(width: AppVersionUI.screenWidth - 80 - 56, height: 1000), options: NSStringDrawingOptions(rawValue: NSStringDrawingOptions.RawValue(UInt8(NSStringDrawingOptions.usesLineFragmentOrigin.rawValue) | UInt8(NSStringDrawingOptions.usesFontLeading.rawValue))), attributes:attributes, context: nil).size
-        return size
-    }
-
 
 }
 
@@ -169,7 +192,7 @@ extension AppVersion {
 
     @objc private func gotoUpdate() {
         var appUrl = AppVersionConfig.shared.updateUrl
-        if AppVersionConfig.shared.updateUrl.contains("http://") || AppVersionConfig.shared.updateUrl.contains("https://") {
+        if !AppVersionConfig.shared.updateUrl.contains("http://") && !AppVersionConfig.shared.updateUrl.contains("https://") {
             appUrl = "https://" + AppVersionConfig.shared.updateUrl
         }
         let url = URL(string: appUrl)
@@ -248,11 +271,10 @@ struct AppVersionConfig {
 }
 
 struct AppVersionUI {
+    /// 描述文字大小
+    var txtFont: CGFloat = 13
     /// 最大高度
-    var alertMaxHeight: CGFloat = 400
-    /// 顶部图片高度
-    var topImageHeight:CGFloat = 80
-    var lblVersionHeight:CGFloat = 28
+    var alertMaxHeight: CGFloat = 200
     /// 升级按钮高度
     var UpdateButtonHeight:CGFloat = 40
     /// 取消按钮宽度
