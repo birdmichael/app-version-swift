@@ -1,4 +1,10 @@
-![logo](https://github.com/birdmichael/app-version-swift/blob/master/logo.png)
+---
+typora-root-url: ../app-version-swift
+---
+
+
+
+![logo](/logo.png)
 
 ## APP版本管理系统
 
@@ -71,7 +77,7 @@ iOS端预览
 
 后端预览
 
-![](/show1.png)
+![show1](/show1.png)
 
 ![show2](/show2.png)
 
