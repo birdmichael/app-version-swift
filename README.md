@@ -1,8 +1,4 @@
----
-typora-root-url: ../app-version-swift
----
-
-![logo](/logo.png)
+![logo](/Users/birdmichael/Documents/GoldPraise/app-version-swift/logo.png)
 
 ## APP版本管理系统
 
