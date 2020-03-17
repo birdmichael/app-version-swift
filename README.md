@@ -79,6 +79,7 @@ NOTE: 有时候邮件回复的不是那么及时，推荐微信。
 
 微信: birdmichael （备注：APP 管理系统）
 
-=== License
+### License
 
 Apache Licensed. 具体查看 `License`
+
