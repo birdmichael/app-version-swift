@@ -9,14 +9,48 @@ import Foundation
 import Alamofire
 import SnapKit
 
+struct UserDefaultKeys {
+    /// 最后一次弹出版本
+    let lastAlertVersion = "lastAlertVersion"
+}
 
 public class AppVersion: UIView {
+    /// 描述列表
+    public var listTxt: UITextView!
+    /// 容器
+    public var contentView: UIView!
+    /// 顶部图片
+    public var topImageView: UIImageView!
+    /// 图标（默认是个小火箭）
+    public var iconImageView: UIImageView!
+    /// 版本信息
+    public var versionLabel: UILabel!
+    /// 更新按钮
+    public var updateButton: UIButton!
+    /// 取消按钮
+    public var cancelButton: UIButton!
 
-    var date : ResponseData
+    
+    var responseData : VersionData
+    var config: AppVersionConfig
 
+    /// 搭配后端框架，或一件请求
+    public static func registerApp(appId:String, serverUrl: String, config: AppVersionConfig?) {
+        requestServer(appId: appId, serverUrl: serverUrl, config: config)
+    }
 
-    public static func registerApp(appId:String, serverUrl: String) {
-        requestServer(appId: appId, serverUrl: serverUrl)
+    /// 自定义请求，弹窗
+    public static func showAlert(parameters:VersionData, config: AppVersionConfig?) {
+        guard !compareVersion(localVersion: currentVersion(), newVersion: parameters.version) else { return } // 版本比较
+        guard parameters.forceUpdate != .silent && parameters.forceUpdate != .silentIgnore else { return } // 如果是静默(静默和静默忽略)，则不弹出
+        // 如果是可忽略，并且已经储存了最后一次弹出的版本,和需要弹出的版本是最新的。就不需要再次弹出
+        if parameters.forceUpdate == .ignore,
+            let lastAlertVersion = UserDefaults.standard.string(forKey: UserDefaultKeys().lastAlertVersion),
+            compareVersion(localVersion: lastAlertVersion, newVersion: parameters.version) { return }
+        let alert = AppVersion(parameters: parameters, config ?? AppVersionConfig())
+        alert.setupSubView()
+        appWindow?.addSubview(alert)
+        UserDefaults.standard.set(parameters.version, forKey: UserDefaultKeys().lastAlertVersion)
     }
 
     static let appWindow: UIWindow? = {
@@ -30,10 +64,9 @@ public class AppVersion: UIView {
         return UIApplication.shared.delegate?.window ?? nil
     }()
 
-    private var listTxt:UITextView!
-
-    init(parameters:ResponseData) {
-        date = parameters
+    init(parameters: VersionData, _ conf: AppVersionConfig) {
+        config = conf
+        responseData = parameters
         super.init(frame: CGRect.zero)
 
     }
@@ -42,14 +75,7 @@ public class AppVersion: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    fileprivate static func showAlert(parameters:ResponseData) {
-        guard !compareVersion(localVersion: currentVersion(), newVersion: parameters.version) else { return }
-        let alert = AppVersion(parameters: parameters)
-        alert.makeUI()
-        appWindow?.addSubview(alert)
-    }
-
-    fileprivate static func requestServer(appId:String, serverUrl: String) {
+    fileprivate static func requestServer(appId:String, serverUrl: String, config: AppVersionConfig?) {
         let parameters = ["channelCode" : "App Store",
                           "platform": "iOS",
                           "tenantAppId": appId,
@@ -58,21 +84,20 @@ public class AppVersion: UIView {
         AF.request(serverUrl, method: .get, parameters: parameters, encoding: URLEncoding.default).responseDecodable(of: Response.self) { (response) in
             switch response.result {
             case let .success(value):
-                showAlert(parameters: value.data)
+                showAlert(parameters: value.data, config: config)
                 case .failure(_):
                 debugPrint("没有最新版本，请配置最新版本")
             }
         }
     }
 
-    fileprivate func makeUI() {
+    fileprivate func setupSubView() {
         self.frame = UIScreen.main.bounds
         self.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
 
-        let config = AppVersionConfig.shared
         let ui = config.userInterface
 
-        let contentView = UIView()
+        contentView = UIView()
         contentView.center = self.center
         contentView.backgroundColor = UIColor.white
         contentView.layer.cornerRadius = 12
@@ -82,34 +107,34 @@ public class AppVersion: UIView {
             make.center.equalToSuperview()
         }
 
-        let topImage = UIImageView(frame: .zero)
-        topImage.image = UIImage(named: "AppVersion.bundle/upgrade_bg_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
-        contentView.addSubview(topImage)
-        topImage.snp.makeConstraints { (make) in
+        topImageView = UIImageView(frame: .zero)
+        topImageView.image = UIImage(named: "AppVersion.bundle/upgrade_bg_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
+        contentView.addSubview(topImageView)
+        topImageView.snp.makeConstraints { (make) in
             make.left.right.top.equalToSuperview()
         }
 
-        let rightImage = UIImageView(frame: .zero)
-        rightImage.image = UIImage(named: "AppVersion.bundle/upgrade_rocket_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
-        self.addSubview(rightImage)
-        rightImage.snp.makeConstraints { (make) in
-            make.right.equalTo(topImage)
-            make.top.equalTo(topImage).offset(-24)
+        iconImageView = UIImageView(frame: .zero)
+        iconImageView.image = UIImage(named: "AppVersion.bundle/upgrade_rocket_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
+        self.addSubview(iconImageView)
+        iconImageView.snp.makeConstraints { (make) in
+            make.right.equalTo(topImageView)
+            make.top.equalTo(topImageView).offset(-24)
         }
 
-        let lblVersion = UILabel()
-        lblVersion.font = UIFont.boldSystemFont(ofSize: 13)
-        lblVersion.textAlignment = .center
-        lblVersion.textColor = .white
-        lblVersion.text = "V\(date.version)"
-        topImage.addSubview(lblVersion)
-        lblVersion.snp.makeConstraints { (make) in
+        versionLabel = UILabel()
+        versionLabel.font = UIFont.boldSystemFont(ofSize: 13)
+        versionLabel.textAlignment = .center
+        versionLabel.textColor = .white
+        versionLabel.text = "V\(responseData.version)"
+        topImageView.addSubview(versionLabel)
+        versionLabel.snp.makeConstraints { (make) in
             make.left.equalTo(16)
             make.bottom.equalTo(-50)
         }
 
         listTxt = UITextView()
-        listTxt.text = date.description
+        listTxt.text = responseData.description
         listTxt.isEditable = false
         listTxt.isSelectable = false
         listTxt.isScrollEnabled = false
@@ -126,7 +151,7 @@ public class AppVersion: UIView {
         listTxt.sizeToFit()
 
         listTxt.snp.makeConstraints { (make) in
-            make.top.equalTo(topImage.snp.bottom).offset(20)
+            make.top.equalTo(topImageView.snp.bottom).offset(20)
             make.left.equalTo(16)
             make.right.equalTo(-16)
         }
@@ -137,7 +162,7 @@ public class AppVersion: UIView {
             listTxt.isScrollEnabled = true
             listTxt.showsVerticalScrollIndicator = true
             listTxt.snp.remakeConstraints { (make) in
-                make.top.equalTo(topImage.snp.bottom).offset(20)
+                make.top.equalTo(topImageView.snp.bottom).offset(20)
                 make.left.equalTo(16)
                 make.right.equalTo(-16)
                 make.height.equalTo(ui.alertMaxHeight)
@@ -145,35 +170,39 @@ public class AppVersion: UIView {
         }
 
 
-        let btnUpdate = UIButton(type: .system)
-        btnUpdate.clipsToBounds = true
-        btnUpdate.layer.cornerRadius = 4
-        btnUpdate.backgroundColor = UIColor(red: 34 / 255, green: 153 / 255, blue: 238 / 255, alpha: 1)
-        btnUpdate.setTitleColor(UIColor.white, for: .normal)
-        btnUpdate.setTitle("立即更新", for: .normal)
-        btnUpdate.addTarget(self, action: #selector(gotoUpdate), for: UIControl.Event.touchUpInside)
-        contentView.addSubview(btnUpdate)
-        btnUpdate.snp.makeConstraints { (make) in
+        updateButton = UIButton(type: .system)
+        updateButton.clipsToBounds = true
+        updateButton.layer.cornerRadius = 4
+        updateButton.backgroundColor = UIColor(red: 0.95, green: 0.14, blue: 0, alpha: 1)
+        updateButton.setTitleColor(UIColor.white, for: .normal)
+        updateButton.setTitle("立即更新", for: .normal)
+        updateButton.addTarget(self, action: #selector(gotoUpdate), for: UIControl.Event.touchUpInside)
+        contentView.addSubview(updateButton)
+        updateButton.snp.makeConstraints { (make) in
             make.top.equalTo(listTxt.snp.bottom).offset(10)
             make.left.equalTo(16)
             make.right.equalTo(-16)
             make.bottom.equalTo(-16).priority(.medium)
-            make.height.equalTo(34)
+            make.height.equalTo(ui.updateButtonHeight)
         }
 
 
-        let btnCancel = UIButton(type: .system)
-        btnCancel.bounds = CGRect.init(x: 0, y: 0, width: ui.cancelButtonWidth, height: ui.cancelButtonWidth)
-        btnCancel.center = CGPoint.init(x: contentView.frame.maxX, y: contentView.frame.minY)
-        btnCancel.setImage(UIImage(named: "AppVersion.bundle/upgrade_close_icon", in: Bundle(for: AppVersion.self), compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
-        btnCancel.addTarget(self, action: #selector(cancelAlertAction), for: UIControl.Event.touchUpInside)
-        contentView.addSubview(btnCancel)
-        btnCancel.snp.makeConstraints { (make) in
+        cancelButton = UIButton(type: .system)
+        cancelButton.center = CGPoint.init(x: contentView.frame.maxX, y: contentView.frame.minY)
+        cancelButton.setImage(UIImage(named: "AppVersion.bundle/upgrade_close_icon", in: Bundle(for: AppVersion.self), compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        cancelButton.addTarget(self, action: #selector(cancelAlertAction), for: UIControl.Event.touchUpInside)
+        contentView.addSubview(cancelButton)
+        cancelButton.snp.makeConstraints { (make) in
             make.left.equalTo(16)
+            make.size.equalTo(CGSize(width: ui.cancelButtonWidth, height: ui.cancelButtonWidth))
             make.top.equalTo(13)
         }
+        // 如果是强制更新，或者当前版本小于最低版本
+        cancelButton.isHidden = ((responseData.forceUpdate == .must) || !AppVersion.compareVersion(localVersion: AppVersion.currentVersion(), newVersion: responseData.allowLowestVersion))
 
-
+        if let block = config.layoutCompletionBlock {
+            block(self)
+        }
     }
 
 }
@@ -191,9 +220,9 @@ extension AppVersion {
     }
 
     @objc private func gotoUpdate() {
-        var appUrl = AppVersionConfig.shared.updateUrl
-        if !AppVersionConfig.shared.updateUrl.contains("http://") && !AppVersionConfig.shared.updateUrl.contains("https://") {
-            appUrl = "https://" + AppVersionConfig.shared.updateUrl
+        var appUrl = config.updateUrl
+        if !config.updateUrl.contains("http://") && !config.updateUrl.contains("https://") {
+            appUrl = "https://" + config.updateUrl
         }
         let url = URL(string: appUrl)
         if #available(iOS 10.0, *) {
@@ -245,6 +274,11 @@ extension AppVersion {
     }
 
     /// 比较
+    ///
+    ///     `true`为版本版本大于或等于更新版本。则是最新版本
+    /// - Parameters:
+    ///   - localArray: 本地版本
+    ///   - storeArray: 比较版本
     fileprivate static func compareNumber(localArray:[String],storeArray:[String]) -> Bool {
         for version in 0..<localArray.count {
             if  Int(localArray[version])! != Int(storeArray[version])! {
@@ -261,24 +295,25 @@ extension AppVersion {
 
 
 
-struct AppVersionConfig {
-    static let shared = AppVersionConfig()
-
+public struct AppVersionConfig {
+    public init() {}
     /// 用户界面
-    var userInterface = AppVersionUI()
+    public var userInterface = AppVersionUI()
     /// 更新appUrl
-    var updateUrl = "http://www.apple.com"
+    public var updateUrl = "http://www.apple.com"
+    /// 视图创建完毕，给外部一次修改里面布局的机会
+    public var layoutCompletionBlock : ((_ alert: AppVersion) -> Void)?
 }
 
-struct AppVersionUI {
+public struct AppVersionUI {
     /// 描述文字大小
-    var txtFont: CGFloat = 13
+    public var txtFont: CGFloat = 13
     /// 最大高度
-    var alertMaxHeight: CGFloat = 200
+    public var alertMaxHeight: CGFloat = 200
     /// 升级按钮高度
-    var UpdateButtonHeight:CGFloat = 40
+    public var updateButtonHeight:CGFloat = 34
     /// 取消按钮宽度
-    var cancelButtonWidth:CGFloat = 36
+    public var cancelButtonWidth:CGFloat = 16
 
 
     static let screenWidth = UIScreen.main.bounds.width

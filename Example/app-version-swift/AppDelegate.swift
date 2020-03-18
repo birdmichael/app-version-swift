@@ -17,8 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        // Override point for customization after application launch.
-        AppVersion.registerApp(appId: "interbullion", serverUrl: "https://appversion.jjh9999.com/versionCompare")
+        var config = AppVersionConfig()
+        config.layoutCompletionBlock = { alert in
+            alert.updateButton.setTitle("升级", for: .normal)
+        }
+        /// api 自行替换接口地址
+        AppVersion.registerApp(appId: "interbullion", serverUrl: "....api....", config: config)
         return true
     }
 

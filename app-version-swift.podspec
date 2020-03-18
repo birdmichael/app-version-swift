@@ -33,9 +33,9 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'app-version-swift/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'app-version-swift' => ['app-version-swift/Assets/*.png']
-  # }
+   s.resource_bundles = {
+     'AppVersion' => ['app-version-swift/Assets/*.png']
+   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
