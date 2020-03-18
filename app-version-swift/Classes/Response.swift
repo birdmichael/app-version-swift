@@ -11,41 +11,35 @@ struct Response: Decodable {
     let code: Int
     let msg: String
     let data :VersionData
-
-    enum CondingKeys: String, CodingKey {
-        case code
-        case msg
-        case data
-    }
 }
-public struct VersionData: Decodable {
+public struct VersionData: Codable {
     /// 最低运行版本
-    let allowLowestVersion: String
+    var allowLowestVersion: String
     /// 更新描述
-    let description: String
+    var description: String
     /// 更新类型
-    let forceUpdate: UpdateType
+    var forceUpdate: VersionUpdateType
     /// 最新版本
-    let version: String
+    var version: String
 
-    enum CondingKeys: String, CodingKey {
-        case allowLowestVersion
-        case description
-        case version
-        case forceUpdate
+    public init(allowLowestVersion: String, version: String, forceUpdate: VersionUpdateType, description: String ) {
+        self.allowLowestVersion = allowLowestVersion
+        self.version = version
+        self.forceUpdate = forceUpdate
+        self.description = description
     }
 }
 
-enum UpdateType: Int, Decodable {
+public enum VersionUpdateType: Int, Codable {
     /// 强制更新 （没有关闭按钮，每次启动弹出提示）
-    case must
+    case must = 0
     /// 一般更新 （有关闭按钮，每次启动弹出提示）
-    case nomal
+    case nomal = 1
     /// 静默更新 （有关闭按钮，不弹出提示）
-    case silent
+    case silent = 2
     /// 忽略更新 （有关闭按钮，并且当前版本只弹出一次）
-    case ignore
+    case ignore = 3
     /// 静默忽略更新 （和忽略更新一样，有关闭按钮，并且不弹出提示）
-    case silentIgnore
+    case silentIgnore = 4
 }
 

@@ -49,7 +49,9 @@ public class AppVersion: UIView {
             compareVersion(localVersion: lastAlertVersion, newVersion: parameters.version) { return }
         let alert = AppVersion(parameters: parameters, config ?? AppVersionConfig())
         alert.setupSubView()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
         appWindow?.addSubview(alert)
+        }
         UserDefaults.standard.set(parameters.version, forKey: UserDefaultKeys().lastAlertVersion)
     }
 

@@ -15,14 +15,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        // 自定义配置
         var config = AppVersionConfig()
+        config.updateUrl = "https://www.apple.com"
         config.layoutCompletionBlock = { alert in
             alert.updateButton.setTitle("升级", for: .normal)
         }
+
+
         /// api 自行替换接口地址
-        AppVersion.registerApp(appId: "interbullion", serverUrl: "....api....", config: config)
+//        AppVersion.registerApp(appId: "interbullion", serverUrl: "....api....", config: nil)
+
+        // 自定义接口请求
+        let data = VersionData(allowLowestVersion: "0", version: "1.0", forceUpdate: .must, description: "修复部分BUG。")
+        AppVersion.showAlert(parameters: data, config: nil)
         return true
     }
 
