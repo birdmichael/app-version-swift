@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/229953445/app-version-swift'
+  s.homepage         = 'https://github.com/birdmichael/app-version-swift'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'birdmichael' => 'birdmichael126@gmail.com' }
@@ -30,6 +30,7 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '10.0'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
+  s.swift_version = '5.0'
 
   s.source_files = 'app-version-swift/Classes/**/*'
   
