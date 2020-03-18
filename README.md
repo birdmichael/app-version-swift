@@ -1,8 +1,3 @@
----
-typora-root-url: ../app-version-swift
----
-
-
 
 ![logo](/logo.png)
 
@@ -22,30 +17,45 @@ pod 'app-version-swift'
 ```
 
 #### 注册
+下面是配合后台，直接使用配套后台，或者协商字段一样。否则可以使用下面自定义接方法
 
 ```swift
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
-        // Override point for customization after application launch.
-        AppVersion.registerApp(appId: "XXXXX", serverUrl: "XXXXX")
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // 自定义配置
+        var config = AppVersionConfig()
+        config.updateUrl = "https://www.apple.com"
+        config.layoutCompletionBlock = { alert in
+            alert.updateButton.setTitle("升级", for: .normal)
+        }
+        /// api 自行替换接口地址
+        AppVersion.registerApp(appId: "interbullion", serverUrl: "....api....", config: nil)
         return true
     }
 ```
 
+##### 自定义接口
+请求接口后，自己创建数据，直接进行弹窗。内部会做版本比对，或者更新类型判断
+```swift
+        // 自定义接口请求
+        let data = VersionData(allowLowestVersion: "0", version: "1.0", forceUpdate: .must, description: "测试")
+        AppVersion.showAlert(parameters: data, config: nil)
+```
+
+
 类型说明：
 
 ```
-enum UpdateType: Int, Decodable {
+public enum VersionUpdateType: Int, Codable {
     /// 强制更新 （没有关闭按钮，每次启动弹出提示）
-    case must
+    case must = 0
     /// 一般更新 （有关闭按钮，每次启动弹出提示）
-    case nomal
-    /// 静默更新 （有关闭按钮，并且当前版本只弹出一次）
-    case silent
-    /// 忽略更新 （有关闭按钮，并且不弹出提示）
-    case ignore
+    case nomal = 1
+    /// 静默更新 （有关闭按钮，不弹出提示）
+    case silent = 2
+    /// 忽略更新 （有关闭按钮，并且当前版本只弹出一次）
+    case ignore = 3
     /// 静默忽略更新 （和忽略更新一样，有关闭按钮，并且不弹出提示）
-    case silentIgnore
+    case silentIgnore = 4
 }
 ```
 
