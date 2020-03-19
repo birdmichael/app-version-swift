@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'app-version-swift'
-  s.version          = '0.1.2'
+  s.version          = '0.1.3'
   s.summary          = '配合APP版本管理是一套多应用更新发版的管理平台。iOS弹窗提示升级.'
 
 # This description is used to generate tags and improve search results.
