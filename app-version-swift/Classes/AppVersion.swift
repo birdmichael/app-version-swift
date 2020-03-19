@@ -14,7 +14,7 @@ struct UserDefaultKeys {
     let lastAlertVersion = "lastAlertVersion"
 }
 
-public class AppVersion: UIView {
+public class AppVersion: UIViewController {
     /// 描述列表
     public var listTxt: UITextView!
     /// 容器
@@ -49,31 +49,21 @@ public class AppVersion: UIView {
             compareVersion(localVersion: lastAlertVersion, newVersion: parameters.version) { return }
         let alert = AppVersion(parameters: parameters, config ?? AppVersionConfig())
         alert.setupSubView()
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
-        appWindow?.addSubview(alert)
-        }
         UserDefaults.standard.set(parameters.version, forKey: UserDefaultKeys().lastAlertVersion)
     }
 
-    static let appWindow: UIWindow? = {
-        if #available(iOS 13.0, *) {
-            return UIApplication.shared.connectedScenes
-                .first { $0.activationState == .foregroundActive }
-                .map { $0 as? UIWindowScene }
-                .map { $0?.windows.first } ?? UIApplication.shared.delegate?.window ?? nil
-        }
-
-        return UIApplication.shared.delegate?.window ?? nil
+    lazy var appWindow: UIWindow? = {
+        let wiondow = UIWindow(frame: UIScreen.main.bounds)
+        wiondow.windowLevel = UIWindow.Level.statusBar + 200
+        return wiondow
     }()
 
     init(parameters: VersionData, _ conf: AppVersionConfig) {
         config = conf
         responseData = parameters
-        super.init(frame: CGRect.zero)
-
+        super.init(nibName: nil, bundle: nil)
     }
-
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -94,16 +84,16 @@ public class AppVersion: UIView {
     }
 
     fileprivate func setupSubView() {
-        self.frame = UIScreen.main.bounds
-        self.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        self.view.frame = UIScreen.main.bounds
+        self.view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
 
         let ui = config.userInterface
 
         contentView = UIView()
-        contentView.center = self.center
+        contentView.center = self.view.center
         contentView.backgroundColor = UIColor.white
         contentView.layer.cornerRadius = 12
-        self.addSubview(contentView)
+        self.view.addSubview(contentView)
         contentView.snp.makeConstraints { (make) in
             make.width.equalTo(260)
             make.center.equalToSuperview()
@@ -118,7 +108,7 @@ public class AppVersion: UIView {
 
         iconImageView = UIImageView(frame: .zero)
         iconImageView.image = UIImage(named: "AppVersion.bundle/upgrade_rocket_img", in: Bundle(for: AppVersion.self), compatibleWith: nil)
-        self.addSubview(iconImageView)
+        self.view.addSubview(iconImageView)
         iconImageView.snp.makeConstraints { (make) in
             make.right.equalTo(topImageView)
             make.top.equalTo(topImageView).offset(-24)
@@ -205,19 +195,24 @@ public class AppVersion: UIView {
         if let block = config.layoutCompletionBlock {
             block(self)
         }
-    }
 
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
+            self.appWindow?.rootViewController = self
+            self.appWindow?.makeKeyAndVisible()
+        }
+    }
 }
 
 // MARK: - Actions
 extension AppVersion {
     @objc private func cancelAlertAction() {
         UIView.animate(withDuration: 0.3, animations: {
-            self.transform = CGAffineTransform.init(scaleX: 1.2, y: 1.2)
-            self.backgroundColor = UIColor.clear
-            self.alpha = 0
+            self.view.transform = CGAffineTransform.init(scaleX: 1.2, y: 1.2)
+            self.view.backgroundColor = UIColor.clear
+            self.view.alpha = 0
         }) { _ in
-            self.removeFromSuperview()
+            self.view.removeFromSuperview()
+            self.appWindow = nil
         }
     }
 
