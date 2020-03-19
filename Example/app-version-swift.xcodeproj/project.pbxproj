@@ -28,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		192554CCD65455D611323422 /* Pods-app-version-swift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-app-version-swift_Tests/Pods-app-version-swift_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		2B658FCA16C0177BFE2039B6 /* Pods-app-version-swift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Example.release.xcconfig"; path = "Target Support Files/Pods-app-version-swift_Example/Pods-app-version-swift_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* app-version-swift_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-version-swift_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -42,10 +43,13 @@
 		690FCAECC1F308A803480DDA /* Pods_app_version_swift_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app_version_swift_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7010CE2BCD3B3294BAB8E07E /* Pods-app-version-swift_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Tests.debug.xcconfig"; path = "Target Support Files/Pods-app-version-swift_Tests/Pods-app-version-swift_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		9526904FD080BF439BCBDF7F /* app-version-swift.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "app-version-swift.podspec"; path = "../app-version-swift.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D20528B3F299FA805055AD5 /* Pods-app-version-swift_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-app-version-swift_Tests/Pods-app-version-swift_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		9D2CDC0045C789D6671FF33F /* Pods_app_version_swift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app_version_swift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA85143EB0C3687F17C79C26 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		AAF74C4F1B943800580B77B0 /* Pods-app-version-swift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Tests.release.xcconfig"; path = "Target Support Files/Pods-app-version-swift_Tests/Pods-app-version-swift_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		C262C7592814C91916F8662D /* Pods-app-version-swift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-app-version-swift_Example/Pods-app-version-swift_Example.release.xcconfig"; sourceTree = "<group>"; };
 		E368B0430186122E28C183EE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		E3BBB12AD52237951531B8FD /* Pods-app-version-swift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-app-version-swift_Example/Pods-app-version-swift_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		F23254631B19E4F0ABFDD6A9 /* Pods-app-version-swift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-version-swift_Example.debug.xcconfig"; path = "Target Support Files/Pods-app-version-swift_Example/Pods-app-version-swift_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -155,6 +159,10 @@
 				2B658FCA16C0177BFE2039B6 /* Pods-app-version-swift_Example.release.xcconfig */,
 				7010CE2BCD3B3294BAB8E07E /* Pods-app-version-swift_Tests.debug.xcconfig */,
 				AAF74C4F1B943800580B77B0 /* Pods-app-version-swift_Tests.release.xcconfig */,
+				E3BBB12AD52237951531B8FD /* Pods-app-version-swift_Example.debug.xcconfig */,
+				C262C7592814C91916F8662D /* Pods-app-version-swift_Example.release.xcconfig */,
+				9D20528B3F299FA805055AD5 /* Pods-app-version-swift_Tests.debug.xcconfig */,
+				192554CCD65455D611323422 /* Pods-app-version-swift_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -269,15 +277,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-app-version-swift_Example-checkManifestLockResult.txt",
 			);
@@ -291,15 +295,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-app-version-swift_Tests-checkManifestLockResult.txt",
 			);

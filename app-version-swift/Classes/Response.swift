@@ -15,6 +15,8 @@ struct Response: Decodable {
 public struct VersionData: Codable {
     /// 最低运行版本
     var allowLowestVersion: String
+    /// 更新地址（商店地址）
+    var cosUrl: String
     /// 更新描述
     var description: String
     /// 更新类型
@@ -22,11 +24,12 @@ public struct VersionData: Codable {
     /// 最新版本
     var version: String
 
-    public init(allowLowestVersion: String, version: String, forceUpdate: VersionUpdateType, description: String ) {
+    public init(allowLowestVersion: String, version: String, forceUpdate: VersionUpdateType, description: String, cosUrl: String) {
         self.allowLowestVersion = allowLowestVersion
         self.version = version
         self.forceUpdate = forceUpdate
         self.description = description
+        self.cosUrl = cosUrl
     }
 }
 

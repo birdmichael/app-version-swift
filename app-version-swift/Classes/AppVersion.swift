@@ -222,9 +222,9 @@ extension AppVersion {
     }
 
     @objc private func gotoUpdate() {
-        var appUrl = config.updateUrl
-        if !config.updateUrl.contains("http://") && !config.updateUrl.contains("https://") {
-            appUrl = "https://" + config.updateUrl
+        var appUrl = responseData.cosUrl
+        if !responseData.cosUrl.contains("http://") && !responseData.cosUrl.contains("https://") {
+            appUrl = "https://" + responseData.cosUrl
         }
         let url = URL(string: appUrl)
         if #available(iOS 10.0, *) {
@@ -301,8 +301,6 @@ public struct AppVersionConfig {
     public init() {}
     /// 用户界面
     public var userInterface = AppVersionUI()
-    /// 更新appUrl
-    public var updateUrl = "http://www.apple.com"
     /// 视图创建完毕，给外部一次修改里面布局的机会
     public var layoutCompletionBlock : ((_ alert: AppVersion) -> Void)?
 }
