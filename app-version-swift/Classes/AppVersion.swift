@@ -222,9 +222,9 @@ extension AppVersion {
     }
 
     @objc private func gotoUpdate() {
-        var appUrl = responseData.cosUrl
-        if !responseData.cosUrl.contains("http://") && !responseData.cosUrl.contains("https://") {
-            appUrl = "https://" + responseData.cosUrl
+        var appUrl = responseData.appStoreUrl
+        if !responseData.appStoreUrl.contains("http://") && !responseData.appStoreUrl.contains("https://") {
+            appUrl = "https://" + responseData.appStoreUrl
         }
         let url = URL(string: appUrl)
         if #available(iOS 10.0, *) {

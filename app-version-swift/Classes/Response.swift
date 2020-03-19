@@ -29,7 +29,7 @@ public struct VersionData: Codable {
         self.version = version
         self.forceUpdate = forceUpdate
         self.description = description
-        self.appStoreUrl = cosUrl
+        self.appStoreUrl = appStoreUrl
     }
 }
 
