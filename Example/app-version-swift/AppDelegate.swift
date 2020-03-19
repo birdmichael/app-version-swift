@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        AppVersion.registerApp(appId: "interbullion", serverUrl: "....api....", config: nil)
 
         // 自定义接口请求
-        let data = VersionData(allowLowestVersion: "0", version: "1.0", forceUpdate: .must, description: "修复部分BUG", cosUrl:"https://www.baidu.com")
+        let data = VersionData(allowLowestVersion: "0", version: "1.0", forceUpdate: .must, description: "修复部分BUG", appStoreUrl:"https://www.baidu.com")
         AppVersion.showAlert(parameters: data, config: nil)
         return true
     }
