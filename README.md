@@ -23,7 +23,6 @@ pod 'app-version-swift'
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // 自定义配置
         var config = AppVersionConfig()
-        config.updateUrl = "https://www.apple.com"
         config.layoutCompletionBlock = { alert in
             alert.updateButton.setTitle("升级", for: .normal)
         }
@@ -54,7 +53,7 @@ public enum VersionUpdateType: Int, Codable {
     case silent = 2
     /// 忽略更新 （有关闭按钮，并且当前版本只弹出一次）
     case ignore = 3
-    /// 静默忽略更新 （和忽略更新一样，有关闭按钮，并且不弹出提示）
+    /// 静默忽略更新 （和静默更新一样，不弹出提示）
     case silentIgnore = 4
 }
 ```
@@ -63,7 +62,7 @@ public enum VersionUpdateType: Int, Codable {
 
 ## 功能概览
 
-本系统的主要功能有 IOS版本管理，自定义接口以及管理员管理。 
+本系统的主要功能有 IOS端配合版本管理，自动显示更新弹窗。 
 
 * `版本管理` 是本系统的基础功能，可以帮您实现自己的应用在安卓各应用商店或IOS的App Store上各个版本的管理。 +
 * `RN 管理` 可以来便携管理您应用的RN包和RN路由。 +

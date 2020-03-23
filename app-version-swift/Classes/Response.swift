@@ -42,7 +42,7 @@ public enum VersionUpdateType: Int, Codable {
     case silent = 2
     /// 忽略更新 （有关闭按钮，并且当前版本只弹出一次）
     case ignore = 3
-    /// 静默忽略更新 （和忽略更新一样，有关闭按钮，并且不弹出提示）
+    /// 静默忽略更新 （和静默更新一样，不弹出提示）
     case silentIgnore = 4
 }
 

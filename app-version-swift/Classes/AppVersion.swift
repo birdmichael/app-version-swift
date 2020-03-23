@@ -126,6 +126,7 @@ public class AppVersion: UIViewController {
         }
 
         listTxt = UITextView()
+        listTxt.backgroundColor = .white
         listTxt.text = responseData.description
         listTxt.isEditable = false
         listTxt.isSelectable = false
